@@ -26,6 +26,7 @@ import com.httpapp.rest.HTTPRestApi;
 import com.httpapp.ui.adapters.ListAdapter;
 import com.httpapp.widget.SimpleDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -50,10 +51,9 @@ public class MainActivity extends AppCompatActivity  {
     @Bind(R.id.nav_view)
     NavigationView navigationView;
 
-    private List<Book> bookList;
+    private List<Book> bookList = new ArrayList<>();
     private ListAdapter listAdapter;
     private boolean isRunning;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,17 +79,15 @@ public class MainActivity extends AppCompatActivity  {
             Toast.makeText(this, "NO CONNECTION", Toast.LENGTH_SHORT).show();
         }
 
-        bookList = Book.getBookList();
-        if (bookList != null){
-            listAdapter = new ListAdapter(bookList);
-            recyclerView.setAdapter(listAdapter);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            layoutManager.scrollToPosition(0);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
-            recyclerView.setHasFixedSize(true);
-        }
+        listAdapter = new ListAdapter(bookList);
+        recyclerView.setAdapter(listAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.scrollToPosition(0);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(this));
+        recyclerView.setHasFixedSize(true);
+
     }
 
     public static boolean hasConnection(Context context) {
@@ -163,6 +161,9 @@ public class MainActivity extends AppCompatActivity  {
                 isRunning = false;
                 if (response.isSuccessful()) {
                     Book.getBookListFromJson(response);
+                    bookList.addAll(Book.getBookList());
+                    listAdapter.notifyDataSetChanged();
+
                     progressBar.setVisibility(View.GONE);
                 }
             }
