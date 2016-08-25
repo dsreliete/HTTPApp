@@ -46,7 +46,7 @@ public class HTTP {
                     return null;
                 }
                 JSONObject json = new JSONObject(getStringFromBuffer(inputStream));
-                return Book.getBookFromJson(json);
+                return Book.getBookListFromVolleyJson(json);
             }
         } catch (Exception e) {
             e.printStackTrace();

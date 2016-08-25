@@ -10,25 +10,16 @@ import java.util.List;
  */
 public class Novatec {
     @SerializedName("categoria")
-    private String category;
+    public String category;
     @SerializedName("livros")
-    private List<Livro> livros = new ArrayList<>();
-
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public List<Livro> livros = new ArrayList<>();
 
     public List<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(List<Livro> livros) {
-        this.livros = livros;
+    public String getCategory() {
+        return category;
     }
 
 }

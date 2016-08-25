@@ -66,13 +66,14 @@ public class MainActivity extends AppCompatActivity  {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        progressBar.setVisibility(View.VISIBLE);
+
         if (navigationView != null) {
             this.setupDrawerContent(navigationView);
         }
 
         if (MainActivity.hasConnection(this)) {
             if (!isRunning){
-                progressBar.setVisibility(View.VISIBLE);
                 initDownloadRetrofit();
             }
         }else {
@@ -94,7 +95,11 @@ public class MainActivity extends AppCompatActivity  {
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 context.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo.isConnected();
+        if (networkInfo != null){
+            return networkInfo.isConnected();
+        }else{
+            return false;
+        }
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -160,8 +165,8 @@ public class MainActivity extends AppCompatActivity  {
             public void onResponse(Call<Model> call, retrofit2.Response<Model> response) {
                 isRunning = false;
                 if (response.isSuccessful()) {
-                    Book.getBookListFromJson(response);
-                    bookList.addAll(Book.getBookList());
+                    Book book = new Book();
+                    bookList.addAll(book.getBookListFromRetrofitJson(response));
                     listAdapter.notifyDataSetChanged();
 
                     progressBar.setVisibility(View.GONE);
@@ -170,7 +175,11 @@ public class MainActivity extends AppCompatActivity  {
 
             @Override
             public void onFailure(Call<Model> call, Throwable t) {
-                Log.e(TAG, "retrofit response error");
+                if (call.isCanceled()) {
+                    Log.e(TAG, "retrofit response error");
+                } else {
+                    Toast.makeText(MainActivity.this, "Verifique se vc tem conexão com internet", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

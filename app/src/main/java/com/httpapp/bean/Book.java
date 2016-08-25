@@ -14,15 +14,11 @@ import java.util.List;
 
 import retrofit2.Response;
 
-public class Book implements Serializable {
-    public String title;
-    public String category;
-    public String author;
-    public int year;
-    public int page;
-    public String cover;
+//https://raw.githubusercontent.com/nglauber/dominando_android/master/livros_novatec.json
 
-    public static List<Book> mBookList = new ArrayList<>();
+public class Book extends Livro implements Serializable {
+
+    public String category;
 
     public Book() {}
 
@@ -35,93 +31,29 @@ public class Book implements Serializable {
         this.cover = cover;
     }
 
-    public String getTitle() {
-        return title;
-    }
+        public List<Book> getBookListFromRetrofitJson(Response<Model> response){
+            List <Book> bookList= new ArrayList<>();
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+            for (int i = 0; i < response.body().novatecList.size(); i++){
+                String category = response.body().novatecList.get(i).category;
 
-    public String getCover() {
-        return cover;
-    }
+                for (int j = 0; j < response.body().novatecList.get(i).livros.size(); j++) {
+                    Book book = new Book();
+                    book.category = category;
+                    book.author = response.body().novatecList.get(i).livros.get(j).author;
+                    book.cover = response.body().novatecList.get(i).livros.get(j).cover;
+                    book.title = response.body().novatecList.get(i).livros.get(j).title;
+                    book.page = response.body().novatecList.get(i).livros.get(j).page;
+                    book.year = response.body().novatecList.get(i).livros.get(j).year;
 
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public int getPage() {
-        return page;
-    }
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public static List<Book> getBookList() {
-        return mBookList;
-    }
-
-    public static void setBookList(List<Book> bookList) {
-        mBookList = bookList;
-    }
-
-    @Override
-    public String toString() {
-        return category + "\n" + title + "\n" + author + "\n" + year + "\n" + page + "\n" + cover ;
-    }
-
-    public static void getBookListFromJson(Response<Model> response){
-        List<Novatec> novatecList = response.body().getNovatecList();
-        for (int i = 0; i < novatecList.size(); i++){
-            String categoria = novatecList.get(i).getCategory();
-            Book book = new Book();
-            book.category = categoria;
-
-            List<Livro> booksList = novatecList.get(i).getLivros();
-            for (int j = 0; j < booksList.size(); j++){
-                String title = booksList.get(j).getTitle();
-                String author = booksList.get(j).getAuthor();
-                int year = booksList.get(j).getYear();
-                int page = booksList.get(j).getPage();
-                String cover = booksList.get(j).getCover();
-
-                book.title = title;
-                book.author = author;
-                book.year = year;
-                book.page = page;
-                book.cover = cover;
+                    bookList.add(book);
+                }
             }
-            mBookList.add(book);
+            return bookList;
         }
-    }
 
-    public static List<Book> getBookFromJson(JSONObject json) throws JSONException {
+
+    public static List<Book> getBookListFromVolleyJson(JSONObject json) throws JSONException {
         List<Book> bookList = new ArrayList<>();
         String category;
         JSONArray novatecArray = json.getJSONArray("novatec");
@@ -147,4 +79,7 @@ public class Book implements Serializable {
         }
         return bookList;
     }
+
+
+
 }

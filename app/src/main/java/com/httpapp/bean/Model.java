@@ -11,10 +11,6 @@ import java.util.List;
 public class Model {
 
     @SerializedName("novatec")
-    private List<Novatec> novatecList = new ArrayList<>();
-
-    public List<Novatec> getNovatecList() {
-        return novatecList;
-    }
+    public List<Novatec> novatecList = new ArrayList<>();
 
 }

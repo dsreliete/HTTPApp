@@ -85,7 +85,7 @@ public class VolleyActivity extends AppCompatActivity implements
             isRunning = false;
             try {
                 bookList = new ArrayList<>();
-                List<Book> list = Book.getBookFromJson(response);
+                List<Book> list = Book.getBookListFromVolleyJson(response);
 
                 if (list != null)
                     bookList.addAll(list);
